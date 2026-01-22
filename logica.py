@@ -16,6 +16,7 @@ usuarios = {}  # dicionário {email: senha}
 
 
 def salvar_usuario(email, senha):
+    try:
         conexao = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -24,8 +25,16 @@ def salvar_usuario(email, senha):
         )
 
         cursor = conexao.cursor()
-
         comando = "INSERT INTO cadastro (Email, Senha) VALUES (%s, %s)"
-
         cursor.execute(comando, (email, senha))
         conexao.commit()
+        print("Usuário salvo com sucesso!")
+
+    except mysql.connector.Error as err:
+        print("Erro MySQL:", err)  # Mostra a mensagem exata do MySQL
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conexao' in locals():
+            conexao.close()
