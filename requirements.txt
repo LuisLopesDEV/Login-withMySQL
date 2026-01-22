@@ -1,0 +1,2 @@
+python-fasthtml
+mysql.connector
