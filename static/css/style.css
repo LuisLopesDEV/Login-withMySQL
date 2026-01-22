@@ -1,0 +1,18 @@
+.email, .password, .envia{
+    width: 100%;
+    max-width: 800px;
+    justify-content: center; /* horizontal */
+    align-items: center;
+}
+h1{
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+ }
+.center-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: flex-start; /* topo */
+    padding-top: 50px;
+}
