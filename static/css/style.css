@@ -1,7 +1,7 @@
 nav.container-fluid {
-    background: white;
+    background: #011936;
     padding: 0 2rem;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px solid #011936;
     height: 80px; /* Altura fixa para o header não "dançar" */
 }
 
@@ -20,6 +20,10 @@ nav.container-fluid {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 40px;
+}
+.titulo_form_sign, .titulo_form_login{
+    color: #556577;
 }
 
 .txt_center-page{
@@ -27,8 +31,8 @@ nav.container-fluid {
 }
 
 /* Ajuste dos inputs para não espalharem horizontalmente */
-.email, .password, .envia {
-    width: 100% !important;
-    max-width: 400px !important;
+.email, .password, .envia, .fname, .lname, .niver {
+    width: 100%;
+    max-width: 400px;
     margin: 0.5rem 0;
 }
