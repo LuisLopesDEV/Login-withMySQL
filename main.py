@@ -3,13 +3,32 @@ from logica import gerar_formulario, salvar_usuario
 
 app, routes = fast_app(static_dir='static', debug=True)
 
+@routes("/", methods=["get"])
+def layout_base(conteudo, titulo="Home"):
 
-@routes("/")
-def homepage():
-    return Titled(
-        "Home",
+    header = Nav(
+        Ul(Li(Strong("MinhaMarca", cls="logo"))),
+        Ul(
+            Li(A("Home", href="/")),
+            Li(A("Sobre", href="#")),
+            Li(A("Serviços", href="#")),
+            Li(A("Contato", href="#")),
+        ),
+        Ul(
+            Li(Button(A("Login", cls="btn-login", href="/login"))),
+            Li(Button(A("Sign Up", cls="btn-signup", href="/sign"))),
+        ),
+        cls="container-fluid"
+    )
+
+    return (
+        Title(titulo),
         Link(rel="stylesheet", href="/static/css/style.css"),
-        A('Criar Conta', href='/login')
+        Div(
+            header,
+            Main(conteudo, cls="container"),  # Container centraliza o conteúdo
+            cls="page-wrapper"
+        )
     )
 
 @routes("/login", methods=["get"])
@@ -23,11 +42,24 @@ def login_page():
 
 @routes("/login", methods=["post"])
 def login(email: str, password: str):
-    salvar_usuario(email, password)
-    return Titled(
-        "Sucesso",
-        Link(rel="stylesheet", href="/static/css/style.css"),
-        P("Dados salvos no banco com sucesso!")
-    )
+
+    formulario = gerar_formulario()
+
+    if not email or not password:
+        return Titled(
+            "Login",
+            Link(rel="stylesheet", href="/static/css/style.css"),
+            Div(formulario, P("Preencha os campos corretamente!", style="color: red", cls='txt_center-page'), cls='center-page')
+        )
+    try:
+        salvar_usuario(email, password)
+
+        return Titled(
+            "Login",
+            Link(rel="stylesheet", href="/static/css/style.css"),
+            Div(formulario, P("Login realizado", style="color: blue", cls='txt_center-page'), cls='center-page')
+        )
+    except Exception as e:
+        return layout_base(P(f"Erro ao salvar: {e}", style="color: red"))
 
 serve()

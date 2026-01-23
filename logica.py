@@ -1,5 +1,6 @@
 from fasthtml.common import *
 import mysql.connector
+from hashlib import sha256
 
 
 def gerar_formulario():
@@ -9,6 +10,7 @@ def gerar_formulario():
         Button('Login',cls='envia',),
         method='post',
         action="/login",
+        cls='form-login'
     )
     return formulario
 
@@ -23,10 +25,10 @@ def salvar_usuario(email, senha):
             password="",
             database="email_market"
         )
-
+        hashed_senha = sha256(senha.encode()).hexdigest()
         cursor = conexao.cursor()
         comando = "INSERT INTO cadastro (Email, Senha) VALUES (%s, %s)"
-        cursor.execute(comando, (email, senha))
+        cursor.execute(comando, (email, hashed_senha))
         conexao.commit()
         print("Usuário salvo com sucesso!")
 
@@ -34,7 +36,5 @@ def salvar_usuario(email, senha):
         print("Erro MySQL:", err)  # Mostra a mensagem exata do MySQL
 
     finally:
-        if 'cursor' in locals():
             cursor.close()
-        if 'conexao' in locals():
             conexao.close()
