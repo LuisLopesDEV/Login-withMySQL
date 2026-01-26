@@ -115,5 +115,5 @@ header = Nav(
 header_logado = Nav(
         Ul(Li(Strong("MinhaMarca", cls="logo"))),
         Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#")), Li(A("Serviços", href="#")), Li(A("Contato", href="#"))),
-        Ul(Li(Img(src="/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil"))),
+        Ul(Li(Img(src="static/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil"))),
         cls="container-fluid")

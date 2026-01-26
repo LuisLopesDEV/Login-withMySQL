@@ -34,7 +34,7 @@ def gerar_formulario_login():
         Input( type='email', cls= 'email', name='email', placeholder='Informe seu email'),
         Input(type='password',cls= 'password',name='password',placeholder='Informe sua senha'),
         Label(Input('Remember me', type='checkbox', cls='relembrar', name='relembrar', role='switch'), cls='remember'),
-        Label(Input('*Aceito os termos e condições', type='checkbox', cls='checkbox', name='checkbox'), cls='remember'),
+        Label(Input('*Aceito os termos e condições', type='checkbox', cls='checkbox', name='checkbox', required=True), cls='remember'),
         Button('Login',cls='envia',),
         method='post',
         action="/login",
