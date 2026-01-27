@@ -9,11 +9,10 @@ Link(rel="stylesheet", href="/static/css/style.css")
 # ---------- LAYOUT GLOBAL ----------
 
 header = Nav(
-    Ul(Li(Strong("MinhaMarca", cls="logo"))),
-    Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#"))),
-    Ul(Li(Button(A("Login", href="/login")))),
-    cls="container-fluid"
-)
+        Ul(Li(Strong("MinhaMarca", cls="logo"))),
+        Ul(Li(A("Home", href="/")),Li(A("Sobre", href="#")),Li(A("Serviços", href="#")),Li(A("Contato", href="#"))),
+        Ul(Li(Button(A("Login", cls="btn-login", href="/login"))),Li(Button(A("Sign Up", cls="btn-signup", href="/sign")))),
+        cls="container-fluid")
 
 header_logado = Nav(
         Ul(Li(Strong("MinhaMarca", cls="logo"))),
