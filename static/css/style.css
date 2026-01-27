@@ -8,14 +8,39 @@ nav.container-fluid {
     align-items: center;
     justify-content: space-between;
 }
+
+body {
+    overflow-x: hidden; /* Evita barra de rolagem horizontal indesejada */
+    margin: 0;
+}
+
+.page-wrapper {
+    display: flex;
+    width: calc(100% + 300px); /* Largura total + largura da sidebar */
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-content {
+    flex: 0 0 100vw; /* Não deixa a área principal encolher */
+    width: 100vw;
+    min-height: 100vh;
+}
+
 .sidebar {
-
+    width: 300px;
+    height: 100vh;
+    background: #011936;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    /* Ela já fica naturalmente à direita do main-content por causa do flex */
 }
 
-.sidebar.active {
-    right: 0;
+/* Classe que será alternada pelo JavaScript */
+.sidebar-open {
+    transform: translateX(-300px);
 }
-
 .center-page {
     flex: 1;
     display: flex;

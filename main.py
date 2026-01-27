@@ -1,22 +1,67 @@
 from fasthtml.common import *
 from logica import *
 from datetime import date
+
 app, routes = fast_app(static_dir='static', debug=True)
 
+Link(rel="stylesheet", href="/static/css/style.css")
+# ---------- LAYOUT GLOBAL (PRIMEIRO) ----------
+
+header = Nav(
+    Ul(Li(Strong("MinhaMarca", cls="logo"))),
+    Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#"))),
+    Ul(Li(Button(A("Login", href="/login")))),
+    cls="container-fluid"
+)
+
+header = Nav(
+        Ul(Li(Strong("MinhaMarca", cls="logo"))),
+        Ul(Li(A("Home", href="/")),Li(A("Sobre", href="#")),Li(A("Serviços", href="#")),Li(A("Contato", href="#"))),
+        Ul(Li(Button(A("Login", cls="btn-login", href="/login"))),Li(Button(A("Sign Up", cls="btn-signup", href="/sign")))),
+        cls="container-fluid")
+header_logado = Nav(
+        Ul(Li(Strong("MinhaMarca", cls="logo"))),
+        Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#")), Li(A("Serviços", href="#")), Li(A("Contato", href="#"))),
+        Ul(Li(Img(src="static/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil", style="width: 86px; height: 86px;"),
+              Button(
+                  "☰",
+                  cls="menu-btn",
+                  onclick="toggleSidebar()",
+                  style="background: none; border: none; font-size: 24px; cursor: pointer;"
+              ))),
+        cls="container-fluid")
+
+div_menu = Div(
+    H3("Minha Conta"),
+    A("Perfil", href="#"),
+    A("Configurações", href="#"),
+    A("Sair", href="/logout"),
+    cls="sidebar",
+    id="sidebar"
+)
+
+# ---------- ROTAS ----------
 
 @routes("/")
 def layout_base(conteudo, request):
     user = get_user(request)
-    if user:
-        return (
-            Title("Home"),
-            Link(rel="stylesheet", href="/static/css/style.css"),
-            Div(header_logado, div_menu, Main(conteudo, cls="container"), cls="page-wrapper"), )
-    else:
-        return (
-            Title("Home"),
-            Link(rel="stylesheet", href="/static/css/style.css"),
-            Div(header, Main(conteudo, cls="container"), cls="page-wrapper"))
+
+    content_area = Div(
+        header_logado if user else header,
+        Main(conteudo, cls="container"),
+        cls="main-content"
+    )
+
+    return (
+        Title("Home"),
+        Link(rel="stylesheet", href="/static/css/style.css"),
+        Script(src="/static/logica.js"),
+        Div(
+            content_area,  # Agora o conteúdo e o header estão juntos
+            div_menu if user else None,
+            id="main-wrapper",
+            cls="page-wrapper"
+        ))
 
 
 @routes("/logout")
@@ -102,40 +147,4 @@ def login(email:str, password:str, relembrar: str | None = None):
 
     return resp
 
-
 serve()
-
-logado = False
-
-header = Nav(
-        Ul(Li(Strong("MinhaMarca", cls="logo"))),
-        Ul(Li(A("Home", href="/")),Li(A("Sobre", href="#")),Li(A("Serviços", href="#")),Li(A("Contato", href="#"))),
-        Ul(Li(Button(A("Login", cls="btn-login", href="/login"))),Li(Button(A("Sign Up", cls="btn-signup", href="/sign")))),
-        cls="container-fluid")
-header_logado = Nav(
-        Ul(Li(Strong("MinhaMarca", cls="logo"))),
-        Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#")), Li(A("Serviços", href="#")), Li(A("Contato", href="#"))),
-        Ul(Li(Img(src="static/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil", style="width: 86px; height: 86px;"),
-              Button("☰", cls="menu-btn", hx_on="click: toggle .active on #sidebar", style="background: none; border: none; font-size: 24px; cursor: pointer;"))),
-        cls="container-fluid")
-div_menu = Div(
-    H3("Minha Conta"),
-    A("Perfil", href="#"),
-    A("Configurações", href="#"),
-    A("Sair", href="/logout"),
-    cls="sidebar",
-    id="sidebar",
-    style=
-    """
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 300px;
-    height: 100vh;
-    background: #011936;
-    color: white;
-    padding: 20px;
-    transition: right 0.3s ease;
-    z-index: 9999;
-    """
-)
