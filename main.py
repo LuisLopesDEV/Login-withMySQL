@@ -11,7 +11,7 @@ def layout_base(conteudo, request):
         return (
             Title("Home"),
             Link(rel="stylesheet", href="/static/css/style.css"),
-            Div(header_logado,Main(conteudo, cls="container"), cls="page-wrapper"))
+            Div(header_logado, div_menu, Main(conteudo, cls="container"), cls="page-wrapper"), )
     else:
         return (
             Title("Home"),
@@ -115,5 +115,27 @@ header = Nav(
 header_logado = Nav(
         Ul(Li(Strong("MinhaMarca", cls="logo"))),
         Ul(Li(A("Home", href="/")), Li(A("Sobre", href="#")), Li(A("Serviços", href="#")), Li(A("Contato", href="#"))),
-        Ul(Li(Img(src="static/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil"))),
+        Ul(Li(Img(src="static/Images/Foto_perfil.png", alt="Logo", cls="foto_perfil", style="width: 86px; height: 86px;"),
+              Button("☰", cls="menu-btn", hx_on="click: toggle .active on #sidebar", style="background: none; border: none; font-size: 24px; cursor: pointer;"))),
         cls="container-fluid")
+div_menu = Div(
+    H3("Minha Conta"),
+    A("Perfil", href="#"),
+    A("Configurações", href="#"),
+    A("Sair", href="/logout"),
+    cls="sidebar",
+    id="sidebar",
+    style=
+    """
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background: #011936;
+    color: white;
+    padding: 20px;
+    transition: right 0.3s ease;
+    z-index: 9999;
+    """
+)

@@ -114,3 +114,4 @@ def get_user(request):
     cursor.close()
     db.close()
     return user
+
