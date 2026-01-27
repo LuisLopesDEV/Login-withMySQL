@@ -40,6 +40,32 @@ div_menu = Div(
     id="sidebar"
 )
 
+
+# ---------- ROTAS TESTE----------
+
+@routes("/login_teste", methods=["get"])
+def login_teste():
+    # Definimos um ID fictício para o usuário de teste (ex: 999)
+    user_id_fake = 999
+
+    # Criamos a sessão manualmente usando sua função existente
+    # Passamos 'on' para o relembrar para o cookie durar mais
+    token, expires = criar_sessao(user_id_fake, relembrar="on")
+
+    resp = RedirectResponse("/")
+
+    # Inserimos o cookie que o seu sistema já espera
+    resp.set_cookie(
+        "auth_token",
+        token,
+        expires=expires,
+        httponly=True
+    )
+
+    print("Login de teste realizado com sucesso!")
+    return resp
+
+
 # ---------- ROTAS ----------
 
 @routes("/")
@@ -123,17 +149,37 @@ def login_page():
 
 
 @routes("/login", methods=["post"])
-def login(email:str, password:str, relembrar: str | None = None):
-    formulario_login = gerar_formulario_login()
+def login(email: str, password: str, relembrar: str | None = None):
+    if email == "teste@gmail.com" and password == "123":
+        # Em vez de chamar criar_sessao (que usa o banco),
+        # criamos um cookie manual "indestrutível" para o teste
+        resp = RedirectResponse("/")
+        resp.set_cookie("auth_token", "token_fake_teste", max_age=3600, httponly=True)
+        print("Login de teste logado com sucesso!")
+        return resp
+    else:
+        # 2. LOGICA NORMAL (BANCO DE DADOS)
+        # Se não for o e-mail de teste, ele tenta o WAMP normalmente
+        try:
+            user_id = conferir_login(email, password)
+        except Exception as e:
+            # Se o banco estiver offline (como no Render), retorna erro amigável
+            formulario_login = gerar_formulario_login()
+            return (Title('Erro de Conexão'),
+                    Div(header, formulario_login,
+                        P("O banco de dados está offline, mas você pode usar o login de teste (teste@gmail.com / 999)",
+                          style="color: orange", cls='txt_center-page'),
+                        cls="center-page"),
+                    Link(rel="stylesheet", href="/static/css/style.css"))
 
-    user_id = conferir_login(email, password)
-
+    # Se o user_id (seja o real ou o 999) existir, cria a sessão
     if not user_id:
+        formulario_login = gerar_formulario_login()
         return (Title('Faça seu Login'),
-                      Div(header, formulario_login,
-                          P("Preencha os campos corretamente!", style="color: red", cls='txt_center-page'),
-                          cls="center-page"),
-                          Link(rel="stylesheet", href="/static/css/style.css"))
+                Div(header, formulario_login,
+                    P("E-mail ou senha incorretos!", style="color: red", cls='txt_center-page'),
+                    cls="center-page"),
+                Link(rel="stylesheet", href="/static/css/style.css"))
 
     token, expires = criar_sessao(user_id, relembrar)
 

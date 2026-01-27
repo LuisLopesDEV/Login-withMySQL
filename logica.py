@@ -96,21 +96,34 @@ def criar_sessao(usuarios_id, lembrar):
 
     return token, expires
 
+
 def get_user(request):
     token = request.cookies.get('auth_token')
     if not token:
         return None
-    db = get_db()
-    cursor = db.cursor()
 
-    cursor.execute(
-        """
-        SELECT c.*
-        FROM sessions s
-        JOIN cadastro c ON c.id_cadastro = s.user_id
-        WHERE s.token=%s AND s.expires_at > NOW()
-        """, (token,))
-    user = cursor.fetchone()
-    cursor.close()
-    db.close()
-    return user
+    # --- NOVO: VERIFICAÇÃO DE SESSÃO DE TESTE ---
+    # Se o banco falhar ou se você quiser interceptar o ID 999
+    # Precisamos de uma forma de saber se esse token pertence ao 999
+    # Se você usou criar_sessao(999), o token está no seu dict de sessões ou banco.
+    # Para garantir que funcione no Render SEM BANCO, adicione isto:
+
+    if token == "token_fake_teste":
+        return {"id_cadastro": 999, "fname": "Admin", "lname": "Teste", "email": "teste@gmail.com"}
+
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("""
+                       SELECT c.*
+                       FROM sessions s
+                                JOIN cadastro c ON c.id_cadastro = s.user_id
+                       WHERE s.token = %s
+                         AND s.expires_at > NOW()
+                       """, (token,))
+        user = cursor.fetchone()
+        cursor.close()
+        db.close()
+        return user
+    except Exception:
+        return None
