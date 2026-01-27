@@ -16,7 +16,7 @@ body {
 
 .page-wrapper {
     display: flex;
-    width: calc(100% + 300px); /* Largura total + largura da sidebar */
+    width: calc(100% + 300px);
     transition: transform 0.3s ease-in-out;
 }
 
@@ -34,7 +34,6 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    /* Ela já fica naturalmente à direita do main-content por causa do flex */
 }
 
 /* Classe que será alternada pelo JavaScript */

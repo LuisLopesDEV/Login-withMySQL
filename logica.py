@@ -14,6 +14,7 @@ def get_db():
 
 
 def gerar_formulario_sign():
+
     formulario_sign = Form(
         H1('Faça seu Cadastro', cls='titulo_form_sign'),
         Input(type='text', cls='fname', name='fname', placeholder='Insira seu primeiro nome'),
@@ -24,11 +25,12 @@ def gerar_formulario_sign():
         Button('Login',cls='envia',),
         method='post',
         action="/sign",
-        cls='form-sign'
-    )
+        cls='form-sign')
+
     return formulario_sign
 
-def gerar_formulario_login():
+def gerar_formulario_login()\
+        :
     formulario_login = Form(
         H1('Faça seu Login', cls='titulo_form_login'),
         Input( type='email', cls= 'email', name='email', placeholder='Informe seu email'),
@@ -39,6 +41,7 @@ def gerar_formulario_login():
         method='post',
         action="/login",
         cls='form-login')
+
     return formulario_login
 
 usuarios = {}
@@ -98,15 +101,10 @@ def criar_sessao(usuarios_id, lembrar):
 
 
 def get_user(request):
+
     token = request.cookies.get('auth_token')
     if not token:
         return None
-
-    # --- NOVO: VERIFICAÇÃO DE SESSÃO DE TESTE ---
-    # Se o banco falhar ou se você quiser interceptar o ID 999
-    # Precisamos de uma forma de saber se esse token pertence ao 999
-    # Se você usou criar_sessao(999), o token está no seu dict de sessões ou banco.
-    # Para garantir que funcione no Render SEM BANCO, adicione isto:
 
     if token == "token_fake_teste":
         return {"id_cadastro": 999, "fname": "Admin", "lname": "Teste", "email": "teste@gmail.com"}
