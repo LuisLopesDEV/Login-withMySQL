@@ -11,6 +11,11 @@ utilizando hash de senha, gerenciamento de sessões e cookies.
 - Cookies e sessões (secrets)
 - HTML / CSS
 
+
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)
+![Status](https://img.shields.io/badge/Status-Em%20progresso-yellow)
+
 ## ⚙ Funcionalidades
 - Cadastro de usuários
 - Login com validação em banco de dados
@@ -25,6 +30,7 @@ utilizando hash de senha, gerenciamento de sessões e cookies.
 - Segurança de senhas (hash + salt)
 - SQL com prepared statements
 - Controle de sessão no back-end
+
 
 ## 📁 Estrutura do projeto
 - main.py → rotas e controle da aplicação
