@@ -1,8 +1,9 @@
 from fasthtml.common import *
 import mysql.connector
-from hashlib import sha256
+import bcrypt
 from secrets import token_urlsafe
 from datetime import datetime, timedelta, timezone
+
 
 def get_db():
     return mysql.connector.connect(
@@ -19,7 +20,7 @@ def gerar_formulario_sign():
         H1('Faça seu Cadastro', cls='titulo_form_sign'),
         Input(type='text', cls='fname', name='fname', placeholder='Insira seu primeiro nome'),
         Input(type='text', cls='lname', name='lname', placeholder='Insira seu ultimo nome'),
-        Input(type='date', cls='niver', name='niver', placeholder='Data de nascimento'),
+        Input(type='date', cls='birth', name='birth', placeholder='Data de nascimento'),
         Input( type='email', cls= 'email', name='email', placeholder='Informe seu email'),
         Input(type='password',cls= 'password',name='password',placeholder='Informe sua senha'),
         Button('Login',cls='envia',),
@@ -29,8 +30,8 @@ def gerar_formulario_sign():
 
     return formulario_sign
 
-def gerar_formulario_login()\
-        :
+
+def gerar_formulario_login():
     formulario_login = Form(
         H1('Faça seu Login', cls='titulo_form_login'),
         Input( type='email', cls= 'email', name='email', placeholder='Informe seu email'),
@@ -44,18 +45,29 @@ def gerar_formulario_login()\
 
     return formulario_login
 
-usuarios = {}
+
+def gerar_hash_senha(senha: str) -> str:
+    senha_bytes = senha.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hash_senha = bcrypt.hashpw(senha_bytes, salt)
+    return hash_senha.decode('utf-8')
 
 
-def salvar_usuario(fname, lname, niver, email, senha):
+def verificar_senha(senha_digitada: str, senha_hash: str) -> bool:
+    return bcrypt.checkpw(
+        senha_digitada.encode('utf-8'),
+        senha_hash.encode('utf-8')
+    )
+
+def salvar_usuario(fname, lname, birth, email, senha):
     try:
         db = get_db()
         cursor = db.cursor()
 
-        hashed_senha = sha256(senha.encode()).hexdigest()
+        hashed_senha = gerar_hash_senha(senha)
 
         comando = "INSERT INTO cadastro (Primeiro_nome, Ultimo_nome, Nascimento, Email, Senha) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(comando, (fname, lname, niver, email, hashed_senha))
+        cursor.execute(comando, (fname, lname, birth, email, hashed_senha))
         db.commit()
 
 
@@ -67,18 +79,23 @@ def salvar_usuario(fname, lname, niver, email, senha):
             db.close()
 
 def conferir_login(email, senha):
-        hashed_senha = sha256(senha.encode()).hexdigest()
-
         db = get_db()
         cursor = db.cursor(dictionary=True)
 
-        cursor.execute("SELECT id_cadastro FROM cadastro WHERE Email=%s AND Senha=%s", (email, hashed_senha))
-        usuarios = cursor.fetchone()
+        cursor.execute("SELECT id_cadastro, Senha FROM cadastro WHERE Email=%s", (email,))
+        usuario = cursor.fetchone()
 
         cursor.close()
         db.close()
 
-        return usuarios['id_cadastro'] if usuarios else None
+        if not usuario:
+            return None
+
+        if verificar_senha(senha, usuario['Senha']):
+            return usuario['id_cadastro'] if usuario else None
+
+        return None
+
 
 def criar_sessao(usuarios_id, lembrar):
     token = token_urlsafe(32)

@@ -105,7 +105,6 @@ def sign(fname: str, lname:str, birth: date, email: str, password: str):
             Div(header, formulario_sign, P("Preencha os campos corretamente!", style="color: red", cls='txt_center-page'), cls='center-page'))
 
     try:
-
         salvar_usuario(fname, lname, birth, email, password)
 
         return (Title('Faça seu Cadastro'),
@@ -140,24 +139,22 @@ def login(email: str, password: str, relembrar: str | None = None):
         return resp
 
     else:
-        # 2. LOGICA NORMAL (BANCO DE DADOS)
         try:
             user_id = conferir_login(email, password)
+
         except Exception as e:
-            # Se o banco estiver offline (como no Render), retorna erro
-            formulario_login = gerar_formulario_login()
+
             return (Title('Erro de Conexão'),
-                    Div(header, formulario_login,
+                    Div(header, gerar_formulario_login(),
                         P("O banco de dados está offline, mas você pode usar o login de teste (teste@gmail.com / 999)",
                           style="color: orange", cls='txt_center-page'),
                         cls="center-page"),
                     Link(rel="stylesheet", href="/static/css/style.css"))
 
     if not user_id:
-        formulario_login = gerar_formulario_login()
 
         return (Title('Faça seu Login'),
-                Div(header, formulario_login,
+                Div(header, gerar_formulario_login(),
                     P("E-mail ou senha incorretos!", style="color: red", cls='txt_center-page'),
                     cls="center-page"),
                 Link(rel="stylesheet", href="/static/css/style.css"))

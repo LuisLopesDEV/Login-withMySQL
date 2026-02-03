@@ -84,7 +84,7 @@ body {
 }
 
 /* Ajuste dos inputs para não espalharem horizontalmente */
-.email, .password, .envia, .fname, .lname, .niver {
+.email, .password, .envia, .fname, .lname, .birth {
     width: 100%;
     max-width: 400px;
     margin: 0.5rem 0;
