@@ -40,6 +40,19 @@ div_menu = Div(
 
 @routes("/")
 def layout_base(conteudo, request):
+    """
+    Define o layout base da aplicação.
+
+    Renderiza o cabeçalho (logado ou não), o conteúdo principal da página
+    e o menu lateral caso o usuário esteja autenticado.
+
+    Args:
+        conteudo: Conteúdo principal a ser exibido na página.
+        request: Objeto da requisição HTTP.
+
+    Returns:
+        Estrutura HTML completa da página inicial.
+    """
 
     user = get_user(request)
 
@@ -63,6 +76,18 @@ def layout_base(conteudo, request):
 
 @routes("/logout")
 def logout(request):
+    """
+    Realiza o logout do usuário.
+
+    Remove a sessão do banco de dados (quando aplicável),
+    apaga o cookie de autenticação e redireciona para a página inicial.
+
+    Args:
+        request: Objeto da requisição HTTP.
+
+    Returns:
+        RedirectResponse para a página inicial.
+    """
     token = request.cookies.get("auth_token")
 
     # Só tenta usar o banco se NÃO for o token de teste
@@ -83,18 +108,43 @@ def logout(request):
 
 
 @routes("/sign", methods=["get"])
-def sign_page(titulo = 'Faça seu Cadastro'):
+def sign_page(titulo='Faça seu Cadastro'):
+    """
+    Exibe a página de cadastro do usuário.
+
+    Args:
+        titulo (str): Título da página de cadastro.
+
+    Returns:
+        Estrutura HTML com o formulário de cadastro.
+    """
 
     formulario_sign = gerar_formulario_sign()
 
     return (
         Title(titulo),
         Link(rel="stylesheet", href="/static/css/style.css"),
-        Div(header,formulario_sign, cls='center-page'))
+        Div(header, formulario_sign, cls='center-page'))
 
 
 @routes("/sign", methods=["post"])
-def sign(fname: str, lname:str, birth: date, email: str, password: str):
+def sign(fname: str, lname: str, birth: date, email: str, password: str):
+    """
+    Processa o cadastro de um novo usuário.
+
+    Valida os dados recebidos, salva o usuário no banco
+    e retorna mensagens de sucesso ou erro.
+
+    Args:
+        fname (str): Primeiro nome do usuário.
+        lname (str): Último nome do usuário.
+        birth (date): Data de nascimento.
+        email (str): Email do usuário.
+        password (str): Senha do usuário.
+
+    Returns:
+        Estrutura HTML com feedback do cadastro.
+    """
 
     formulario_sign = gerar_formulario_sign()
 
@@ -109,7 +159,7 @@ def sign(fname: str, lname:str, birth: date, email: str, password: str):
 
         return (Title('Faça seu Cadastro'),
             Link(rel="stylesheet", href="/static/css/style.css"),
-            Div(header,formulario_sign, P("Cadastro realizado", style="color: blue", cls='txt_center-page'), cls='center-page'))
+            Div(header, formulario_sign, P("Cadastro realizado", style="color: blue", cls='txt_center-page'), cls='center-page'))
 
     except Exception as e:
         return layout_base(P(f"Erro ao salvar: {e}", style="color: red"))
@@ -117,6 +167,12 @@ def sign(fname: str, lname:str, birth: date, email: str, password: str):
 
 @routes("/login", methods=["get"])
 def login_page():
+    """
+    Exibe a página de login do usuário.
+
+    Returns:
+        Estrutura HTML com o formulário de login.
+    """
 
     formulario_login = gerar_formulario_login()
 
@@ -128,6 +184,20 @@ def login_page():
 
 @routes("/login", methods=["post"])
 def login(email: str, password: str, relembrar: str | None = None):
+    """
+    Processa o login do usuário.
+
+    Valida credenciais, cria sessão, define cookie de autenticação
+    e redireciona o usuário após login bem-sucedido.
+
+    Args:
+        email (str): Email do usuário.
+        password (str): Senha do usuário.
+        relembrar (str | None): Indica se o usuário deseja manter a sessão ativa.
+
+    Returns:
+        RedirectResponse ou estrutura HTML com mensagens de erro.
+    """
 
     if email == "teste@gmail.com" and password == "123":
         resp = RedirectResponse("/")
@@ -170,5 +240,6 @@ def login(email: str, password: str, relembrar: str | None = None):
     )
 
     return resp
+
 
 serve()
