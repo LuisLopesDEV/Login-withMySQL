@@ -14,7 +14,7 @@ utilizando hash de senha, gerenciamento de sessões e cookies.
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)
-![Status](https://img.shields.io/badge/Status-Em%20progresso-yellow)
+![Status](https://img.shields.io/badge/Status-Finalizado-green)
 
 ## ⚙ Funcionalidades
 - Cadastro de usuários
